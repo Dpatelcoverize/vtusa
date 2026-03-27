@@ -1,0 +1,446 @@
+<?php
+	 // Send to test or prod endpoint
+	 if(isset($sendType)){
+		if($sendType=="prod"){
+			 $url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/warranties/upsert-record?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+			 //$url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/retailers/create-retailer?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+
+			 //echo "WARNING: Attempting to push to PROD.  Disabled for now during development.";
+			 //die();
+		}else{
+			 $url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/warranties/upsert-record?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+			 //$url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/subprod/retailers/create-retailer?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+			 $dealerARNumber = "PA135"; // Hard code this for testing purposes, based on TNG spec.
+			 $dealerAgentEmail = "it+vt-testing@trunorthwarranty.com"; // Hard code this for testing purposes, based on TNG spec.
+		}
+	 }else{
+			 $url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/warranties/upsert-record?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+			 $dealerARNumber = "PA135"; // Hard code this for testing purposes, based on TNG spec.
+			 $dealerAgentEmail = "it+vt-testing@trunorthwarranty.com"; // Hard code this for testing purposes, based on TNG spec.
+	 }
+
+
+	 $curl = curl_init($url);
+	 curl_setopt($curl, CURLOPT_URL, $url);
+	 curl_setopt($curl, CURLOPT_POST, true);
+	 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+	 $headers = array(
+	 	"Accept: application/json",
+	 	"Content-Type: application/json",
+	 );
+	 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+	 $Warranty_PDF = ltrim($Warranty_PDF, '/');
+	 if (file_exists($Warranty_PDF)) {
+	 	$b64WarrantyDoc = base64_encode(file_get_contents($Warranty_PDF));
+	 } else {
+	 	$b64WarrantyDoc = "";
+	 }
+
+	 $Inspection_Report = ltrim($Inspection_Report, '/');
+	 if (file_exists($Inspection_Report)) {
+	 	$b64InspectionDoc = base64_encode(file_get_contents($Inspection_Report));
+	 } else {
+	 	$b64InspectionDoc = "";
+	 }
+
+	 $ECA_Report = ltrim($ECA_Report, '/');
+	 if (file_exists($ECA_Report)) {
+	 	$b64ECADoc = base64_encode(file_get_contents($ECA_Report));
+	 } else {
+	 	$b64ECADoc = "";
+	 }
+
+	 $VIN_Photo = ltrim($VIN_Photo, '/');
+	 if (file_exists($VIN_Photo)) {
+	 	$b64VIN_Image = base64_encode(file_get_contents($VIN_Photo));
+	 	$b64VIN_ImageName = substr($VIN_Photo, strrpos($VIN_Photo, '/') + 1);
+	 } else {
+	 	$b64VIN_Image = "";
+	 	$b64VIN_ImageName = "";
+	 }
+
+	 $Dashboard_Photo = ltrim($Dashboard_Photo, '/');
+	 if (file_exists($Dashboard_Photo)) {
+	 	$b64Dashboard_Image = base64_encode(file_get_contents($Dashboard_Photo));
+	 	$b64Dashboard_ImageName = substr($Dashboard_Photo, strrpos($Dashboard_Photo, '/') + 1);
+	 } else {
+	 	$b64Dashboard_Image = "";
+	 	$b64Dashboard_ImageName = "";
+	 }
+
+	 $Engine_Photo = ltrim($Engine_Photo, '/');
+	 if (file_exists($Engine_Photo)) {
+	 	$b64Engine_Image = base64_encode(file_get_contents($Engine_Photo));
+	 	$b64Engine_ImageName = substr($Engine_Photo, strrpos($Engine_Photo, '/') + 1);
+	 } else {
+	 	$b64Engine_Image = "";
+	 	$b64Engine_ImageName = "";
+	 }
+
+	 if (file_exists($Maintenance_Form)) {
+	 	$b64MaintenanceDoc = base64_encode(file_get_contents(ltrim($Maintenance_Form, '/')));
+	 } else {
+	 	$b64MaintenanceDoc = "";
+	 }
+
+
+
+	if(is_numeric($customerState)){
+		$customerState = selectState($link,$customerState);
+	}
+
+	if(is_numeric($lienState)){
+		$lienState = selectState($link,$lienState);
+	}
+
+	if($isAPU=="Y"){
+		$APU_Coverage = "true";
+	}else{
+		$APU_Coverage = "false";
+	}
+
+	if($AEP=="Y"){
+		$AEP_Coverage = "true";
+	}else{
+		$AEP_Coverage = "false";
+	}
+
+	if($aerialPackage=="Y"){
+		$Aerial_Coverage = "true";
+	}else{
+		$Aerial_Coverage = "false";
+	}
+
+	// Sanity check some data
+	$vehYearForAPI =  $vehYear;
+	if($vehYearForAPI==""){
+		$vehYearForAPI = "null";
+	}
+
+	$odometerreadingForAPI =  $odometerreading;
+	if($odometerreadingForAPI==""){
+		$odometerreadingForAPI = "0";
+	}
+
+	$ecmreadingForAPI =  $ecmreading;
+	if($ecmreadingForAPI==""){
+		$ecmreadingForAPI = "0";
+	}
+
+	$apuYearForAPI =  $apuYear;
+	if($apuYearForAPI==""){
+		$apuYearForAPI = "0";
+	}
+
+	$vehTypeForAPI = "type".$vehType;
+
+	$vehTierTypeForAPI = strtolower($vehTierType);
+
+
+
+	 $data = "{
+	  \"truckVIN\": \"$vehIDNumber\",
+	  \"customerEmail\": \"$customerEmail\",
+	  \"customerPhone\": \"$customerPhone\",
+	  \"customerName\": \"$customerName\",
+	  \"customerAddress\": {
+	  \"street\": \"customerAddress\",
+	  \"street2\": \"\",
+	  \"city\": \"$customerCity\",
+	  \"state\": \"$customerState\",
+	  \"zip\": \"$customerZip\",
+	  \"country\": \"US\"
+	  },
+	  \"companyName\": \"$dealerName\",
+	  \"lienHolderName\": \"$lienName\",
+	  \"lienHolderPhone\": \"$lienPhone\",
+	  \"lienHolderAddress\": {
+	  \"street\": \"$lienAddress\",
+	  \"street2\": \"\",
+	  \"city\": \"$lienCity\",
+	  \"state\": \"$lienState\",
+	  \"zip\": \"$lienZip\",
+	  \"country\": \"US\"
+	  },
+	  \"vehicleType\": \"$vehTypeForAPI\",
+	  \"vehicleMake\": \"$vehMake\",
+	  \"vehicleModel\": \"$vehModel\",
+	  \"vehicleYear\": $vehYearForAPI,
+	  \"vehicleOdometer\": $odometerreadingForAPI,
+	  \"vehicleOdometerUnits\": \"$odometerMilesOrKM\",
+	  \"vehicleEcm\": $ecmreadingForAPI,
+	  \"vehicleEcmUnits\": \"$ecmMilesOrKM\",
+	  \"engineHours\": 0,
+	  \"engineMake\": \"$engMake\",
+	  \"engineModel\": \"$engModel\",
+	  \"engineSerial\": \"$engSerial\",
+	  \"transmissionMake\": \"$transmissionMake\",
+	  \"transmissionModel\": \"$transmissionModel\",
+	  \"transmissionSerial\": \"$transmissionSerial\",
+	  \"apuMake\": \"$apuMake\",
+	  \"apuModel\": \"$apuModel\",
+	  \"apuYear\": $apuYearForAPI,
+	  \"apuSerial\": \"$apuSerial\",
+	  \"dealerID\": \"$dealerAgentEmail\",
+	  \"retailerAR\": \"$dealerARNumber\",
+	  \"poNumber\": \"0\",
+	  \"termLength\": $coverageTerm,
+	  \"programPackage\": \"$vehTierTypeForAPI\",
+	  \"apuCoverage\": $APU_Coverage,
+	  \"apparatusCoverage\": $AEP_Coverage,
+	  \"aerialCoverage\": $Aerial_Coverage,
+	  \"validationType\": \"ECA\",
+	  \"isPaperWarranty\": false,
+	  \"inspectionB64File\" : \"$b64InspectionDoc\",
+	  \"ecaB64File\" : \"$b64ECADoc\",
+	  \"agreementb64File\" : \"$b64WarrantyDoc\",
+	  \"vinPlacardData\" : {\"fileName\" : \"$b64VIN_ImageName\", \"fileBytes\" : \"$b64VIN_Image\"},
+	  \"dashboardPhotoData\" : {\"fileName\" : \"$b64Dashboard_ImageName\", \"fileBytes\" : \"$b64Dashboard_Image\"},
+	  \"enginePlacardData\" : {\"fileName\" : \"$b64Engine_ImageName\", \"fileBytes\" : \"$b64Engine_Image\"}
+	 }";
+
+	  // echo "data=".$data;
+	 // die();
+
+	 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+
+	 $resp = curl_exec($curl);
+	 curl_close($curl);
+	 var_dump($resp);
+	 $json = json_decode($resp, true);
+	 print_r($json);
+
+	 if (isset($json) && array_key_exists("success", $json)) {
+	 	$responseStatus = $json["success"];
+	 } else {
+	 	$responseStatus = 0;
+	 }
+
+
+	 if ($responseStatus == 1) {
+	 	$new_TNG_WarrantyID = $json["data"];
+	 	$apiMessage = $json["message"];
+
+	 	// Save the returned retailer number to the CNTRCT_DIM table.
+		if($sendType=="prod"){
+		 	$stmt = mysqli_prepare($link, "UPDATE Cntrct_Dim SET Assign_Warranty_ID_Prod=?,Sent_To_TNG_Prod_Flg='Y' WHERE
+		 	                               Cntrct_Dim_ID=?");
+		}else{
+		 	$stmt = mysqli_prepare($link, "UPDATE Cntrct_Dim SET Assign_Warranty_ID_Test=?,Sent_To_TNG_Test_Flg='Y' WHERE
+		 	                               Cntrct_Dim_ID=?");
+		}
+
+
+	 	/* Bind variables to parameters */
+	 	$val1 = $new_TNG_WarrantyID;
+	 	$val2 = $warranty_Cntrct_Dim_ID;
+
+	 	mysqli_stmt_bind_param($stmt, "si", $val1, $val2);
+
+	 	/* Execute the statement */
+	 	$result = mysqli_stmt_execute($stmt);
+
+	 } else {
+	 	$new_TNG_WarrantyID = "FAILED";
+	 	$apiMessage = "NONE";
+	 	$responseStatus = 0;
+	 }
+
+
+	 // Create a new API_Data entry to track activity
+	 $stmt = mysqli_prepare($link, "INSERT INTO API_Responses (Acct_ID,Endpoint_Used,statusCode, dataReturned, arNumber, messageText, sentJSON, returnedJSON, createdDate) VALUES (?,?,?,?,?,?,?,?,NOW())");
+
+	 /* Bind variables to parameters */
+	 $val1 = $dealerID;
+	 $val2 = $url;
+	 $val3 = $responseStatus;
+	 $val4 = $new_TNG_WarrantyID;
+	 $val5 = $new_TNG_WarrantyID;
+	 $val6 = $apiMessage;
+	 $val7 = $data;
+	 $val8 = $resp;
+
+	 mysqli_stmt_bind_param($stmt, "isssssss", $val1, $val2, $val3, $val4, $val5, $val6, $val7, $val8);
+
+	 /* Execute the statement */
+	 $result = mysqli_stmt_execute($stmt);
+
+
+	 // If this warranty has small goods, then we need to send each one to TNG separately
+	 if($smallGoodsPackage=="Y"){
+
+		// Hash table of assetTypes for TNG
+		$assetTypesLookup["RECIPROCATING SAW"] = "recipSaw";
+		$assetTypesLookup["DEMO SAW"] = "demoSaw";
+		$assetTypesLookup["CHAIN SAW"] = "chainSaw";
+		$assetTypesLookup["IMPACT DRIVER"] = "impactDriver";
+		$assetTypesLookup["CFM FAN"] = "fan";
+		$assetTypesLookup["GENERATOR"] = "generator";
+		$assetTypesLookup["TRASH PUMP"] = "trashPump";
+		$assetTypesLookup["ELECTRIC VEHICLE BATTERY EXTINGUISHER"] = "batteryExtinguisher";
+		$assetTypesLookup["CUTTERS/SPREADERS/HYDRAULIC RAMS"] = "cutters";
+		$assetTypesLookup["HANDHELD CAMERA (INFRARED, NIGHT VISION)"] = "camera";
+		$assetTypesLookup["FIRE DRONE"] = "fireDrone";
+		$assetTypesLookup["GAS/CHEMICAL METERS"] = "chemMeter";
+		$assetTypesLookup["COMMUNICATION RADIO"] = "comRadio";
+		$assetTypesLookup["PERSONAL RADIO"] = "personalRadio";
+		$assetTypesLookup["SCUBA MASK"] = "scubaMask";
+		$assetTypesLookup["SCUBA TANK/HARNESS"] = "scubaTank";
+		$assetTypesLookup["SCBA MASK"] = "scbaMask";
+		$assetTypesLookup["SCBA PASS ALARM"] = "passAlarm";
+		$assetTypesLookup["SCBA TANK"] = "scbaTank";
+		$assetTypesLookup["NOZZLES (FOAM/WATER)"] = "nozzles";
+		$assetTypesLookup["AIR LIFTING BAG"] = "liftBag";
+		$assetTypesLookup["JACKS/STRUTS"] = "jack";
+		$assetTypesLookup["POWER STRETCHER"] = "stretcher";
+		$assetTypesLookup["DEFIBRILLATOR"] = "defib";
+		$assetTypesLookup["HEART MONITOR"] = "heartMonitor";
+		$assetTypesLookup["AUTOMATED PORTABLE CPR MACHINE"] = "cprMachine";
+
+
+
+		$query  = "SELECT * FROM Sml_Goods_Cvge sgc, Sml_Goods_Gnrc_Prcg sggp WHERE sgc.Cntrct_ID=".$warrantyID." AND
+		           sgc.Sml_Goods_Gnrc_Prcg_ID=sggp.Sml_Goods_Gnrc_Prcg_ID AND sgc.Is_Deleted_Flg!='Y'";
+		$smallGoodsResult = $link->query($query);
+
+		if (mysqli_num_rows($smallGoodsResult) > 0) {
+		  while($row = mysqli_fetch_assoc($smallGoodsResult)) {
+			$Item_Cat_Type_Desc = $row["Item_Cat_Type_Desc"];
+			$Mfr_Nm = $row["Mfr_Nm"];
+			$Ser_nbr = $row["Ser_nbr"];
+			$Model_Nbr = $row["Model_Nbr"];
+			$Ser_nbr = $row["Ser_nbr"];
+			$Sml_Goods_Cvge_ID = $row["Sml_Goods_Cvge_ID"];
+
+			// Get the Receipt image
+			$receiptQuery = "SELECT * FROM File_Assets WHERE Sml_Goods_Cvge_ID=".$Sml_Goods_Cvge_ID."
+			                ORDER BY File_Asset_ID DESC;";
+//echo "receiptQuery=".$receiptQuery;
+//echo "<br />";
+			$receiptResult = $link->query($receiptQuery);
+			$b64ReceiptImage = "";
+			if (mysqli_num_rows($receiptResult) > 0) {
+				$receiptRow = mysqli_fetch_assoc($receiptResult);
+				$receiptImage = ltrim($receiptRow["Path_to_File"], '/');
+//echo "receiptImage=".$receiptImage;
+//echo "<br />";
+
+				 if (file_exists($receiptImage)) {
+					$b64ReceiptImage = base64_encode(file_get_contents($receiptImage));
+				 }
+
+			}
+
+			// NEED TO ADD SMALL GOODS SUPPORT FOR PURCHASE PRICE AND PURCHASE DATE
+
+			// Try to get the TNG asset code from the associative array.
+			$assetType = $assetTypesLookup[$Item_Cat_Type_Desc];
+
+			// API Call to TruNorth
+			$url = "https://vital-trends-api-services-2lzg7n0t.uc.gateway.dev/warranties/small-goods/create-addon-asset?key=AIzaSyDd5htzm_7fFhJsY7oxvE6c8f35FtNKkJk";
+
+			$curl = curl_init($url);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_POST, true);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+			$headers = array(
+				"Accept: application/json",
+				"Content-Type: application/json",
+			);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+
+			$data = "{
+			  \"warrantyConnectionID\": \"$new_TNG_WarrantyID\",
+			  \"assetType\": \"$assetType\",
+			  \"serialNumber\": \"$Ser_nbr\",
+			  \"assetMake\": \"$Mfr_Nm\",
+			  \"assetModel\": \"$Model_Nbr\",
+			  \"purchaseDate\": \"09/01/1998\",
+			  \"purchasePrice\": 198,
+			  \"receiptFile\": \"$b64ReceiptImage\"
+			}";
+
+echo $data;
+//die();
+			 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+
+
+			 $resp = curl_exec($curl);
+			 curl_close($curl);
+			 var_dump($resp);
+			 $json = json_decode($resp, true);
+			 print_r($json);
+
+
+			 if (isset($json) && array_key_exists("success", $json)) {
+				$responseStatus = $json["success"];
+			 } else {
+				$responseStatus = 0;
+			 }
+
+
+			 if ($responseStatus == 1) {
+				$new_TNG_SmallGoodID = $json["data"];
+				$apiMessage = $json["message"];
+
+				// Save the returned Small Good number to the Sml_Goods_Cvge table.
+				if($sendType=="prod"){
+					$stmt = mysqli_prepare($link, "UPDATE Sml_Goods_Cvge SET Sml_Goods_TNG_ID=? WHERE
+												   Sml_Goods_Cvge_ID=?");
+				}else{
+					$stmt = mysqli_prepare($link, "UPDATE Sml_Goods_Cvge SET Sml_Goods_TNG_ID=? WHERE
+												   Sml_Goods_Cvge_ID=?");
+				}
+
+
+				/* Bind variables to parameters */
+				$val1 = $new_TNG_SmallGoodID;
+				$val2 = $Sml_Goods_Cvge_ID;
+
+				mysqli_stmt_bind_param($stmt, "si", $val1, $val2);
+
+				/* Execute the statement */
+				$result = mysqli_stmt_execute($stmt);
+
+			 } else {
+				$new_TNG_SmallGoodID = "FAILED";
+				$apiMessage = "NONE";
+				$responseStatus = 0;
+			 }
+
+
+			 // Create a new API_Data entry to track activity
+			 $stmt = mysqli_prepare($link, "INSERT INTO API_Responses (Acct_ID,Endpoint_Used,statusCode, dataReturned, arNumber, messageText, sentJSON, returnedJSON, createdDate) VALUES (?,?,?,?,?,?,?,?,NOW())");
+
+			 /* Bind variables to parameters */
+			 $val1 = $dealerID;
+			 $val2 = $url;
+			 $val3 = $responseStatus;
+			 $val4 = $new_TNG_WarrantyID;
+			 $val5 = $new_TNG_WarrantyID;
+			 $val6 = $apiMessage;
+			 $val7 = $data;
+			 $val8 = $resp;
+
+			 mysqli_stmt_bind_param($stmt, "isssssss", $val1, $val2, $val3, $val4, $val5, $val6, $val7, $val8);
+
+			 /* Execute the statement */
+			 $result = mysqli_stmt_execute($stmt);
+
+		  }
+		}
+
+
+
+
+	 }
+
+
+
+
+?>

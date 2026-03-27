@@ -1,0 +1,7 @@
+{
+	  "warrantyConnectionID": "FAILED",
+	  "customerName": "Test",
+	  "customerEmail": "Tetst@gmail.com",
+	  "customerPhone": "5436765423",
+	  "muteMessages": true
+	}

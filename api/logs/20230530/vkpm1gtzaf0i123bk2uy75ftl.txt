@@ -1,0 +1,16 @@
+{
+	  "retailerName": "Cascade Fire Equipment",
+	  "retailerEmail": "sales@cascadefire.com",
+	  "retailerPhone": "541-779-0394",
+	  "retailerAddress": {
+	  "street": "8389 11th Street",
+	  "street2": "",
+	  "city": "White City",
+	  "state": "OR",
+	  "zip": "97503",
+	  "country": "US"
+	  },
+	  "defaultCurrency": "USD",
+	  "validationMethod": "ECA Only",
+	  "files" : [{"type" : "vtAgreement", "fileBytes" : ""}]
+	 }

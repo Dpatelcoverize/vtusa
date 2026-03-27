@@ -1,0 +1,10 @@
+{
+			  "warrantyConnectionID": "FAILED",
+			  "assetType": "defib",
+			  "serialNumber": "",
+			  "assetMake": "",
+			  "assetModel": "",
+			  "purchaseDate": "09/01/1998",
+			  "purchasePrice": 198,
+			  "receiptFile": ""
+			}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Signature Board</title>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script src="./js/jSignature/jSignature.min.js"></script>
+<script>
+
+	$(document).ready(function() {
+
+	    $("#signature").css('border', '1px solid #c7c8c9').after('<button class="btn btn-sm btn-primary clear-sign">Clear</button>');
+	});
+
+	$(document).on('click', '.clear-sign', function(e){
+	    e.preventDefault();
+	    let sign = $(this).parent().find('#signature');
+	    sign.jSignature('reset');
+	});
+
+	$(document).ready(function() {
+	
+		$("#signature").jSignature({
+			'decor-color': 'transparent',
+			'lineWidth': 2,
+		});
+		$('#Getsign').click(function () {
+			var sigTxt = $("#signature").jSignature("getData","base30");
+			$("#SignatureTxt").empty();
+			$("#SignatureTxt").append("<b>Base30 ==> </b>"+sigTxt);
+		});
+		$('#Printsign').click(function () {
+			$("#SignatureImage").jSignature();
+			var dataString = $("#signature").jSignature("getData","base30");
+			$("#SignatureImage").jSignature('setData', 'data:' + dataString.join(','));
+		});
+	});
+</script>
+<style>
+	#signature
+	{
+		width: 800px;
+	  	border: 1px solid black;
+	}	
+</style>
+</head>
+<body>
+	<div class="form-group col-md-12 row">
+		<div class="form-group col-md-12">
+			<h2 class="font-weight-normal">Sign here</h2>
+			<div id="signature"></div>
+		</div>
+	</div>
+
+		<h2>Signature Text</h2>
+		<div id="SignatureTxt"></div>
+		<br>
+		<h2>Sinature Image</h2>
+		<div id="SignatureImage">
+
+		</div>
+		<button id="Getsign">Get Singture </button>
+		<button id="Printsign">Print Singture </button>
+
+</body>
+</html>
+
+

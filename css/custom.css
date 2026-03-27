@@ -1,0 +1,203 @@
+/* ------------ Liquid Flux Background -------------- */
+		.liquid-bg {
+			overflow: hidden;
+			background: #878796;
+			position: relative;
+			height: 100vh;
+		}
+
+		#liquidFlux {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: -1;
+		}
+
+		/* ------------ Glass Card -------------- */
+		.glass {
+            background: #201f58;
+            backdrop-filter: blur(22px);
+            border-radius: 22px;
+            padding: 45px;
+            width: 100%;
+            max-width: 475px;   /* 👈 KEY FIX */
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+		.login-card {
+			animation: appear 1.2s ease;
+		}
+
+		@keyframes appear {
+			from {
+				opacity: 0;
+				transform: translateY(30px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* ------------ Floating Inputs -------------- */
+		.floating-group {
+			position: relative;
+		}
+
+		.floating-input {
+			width: 100%;
+			background: rgba(255, 255, 255, 0.10);
+			padding: 12px 14px;
+			border-radius: 10px;
+			border: 1px solid rgba(255, 255, 255, 0.20);
+			color: #fff;
+			outline: none;
+			transition: all .3s ease;
+		}
+
+		.floating-input:focus {
+			border-color: #5A59FF;
+			box-shadow: 0 0 12px rgba(90, 89, 255, 0.6);
+		}
+
+		.floating-label {
+			position: absolute;
+			top: 12px;
+			left: 14px;
+			color: #d4d4e0;
+			transition: .3s;
+			pointer-events: none;
+		}
+
+		.floating-input:focus+.floating-label,
+		.floating-input:not(:placeholder-shown)+.floating-label {
+			top: -9px;
+			left: 6px;
+			font-size: 12px;
+			background: white;
+			padding: 0 5px;
+			border-radius: 4px;
+			color: #201f58;
+		}
+
+		/* ------------ Button -------------- */
+		.btn-flux {
+			width: 100%;
+			background: linear-gradient(135deg, #201f58, #3e3baf, #201f58);
+			background-size: 250% 250%;
+			color: #fff;
+			padding: 13px;
+			border-radius: 12px;
+			border: none;
+			font-size: 16px;
+			font-weight: 600;
+			cursor: pointer;
+			transition: .4s ease;
+			letter-spacing: .7px;
+			position: relative;
+			border: 2px outset grey;
+			overflow: hidden;
+		}
+
+		.btn-flux:hover {
+			background-position: 100% 0;
+			transform: translateY(-4px);
+			box-shadow: 0 8px 25px rgba(46, 44, 133, 0.55);
+		}
+
+		.btn-flux:active {
+			transform: scale(.97);
+		}
+
+		/* ------------ Logo Animation -------------- */
+		.brand-logo {
+			width: 140px;
+			filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4));
+		}
+
+		.animate-pop {
+			animation: popIn .9s ease-out;
+		}
+
+		@keyframes popIn {
+			0% {
+				transform: scale(.5);
+				opacity: 0;
+			}
+
+			80% {
+				transform: scale(1.07);
+			}
+
+			100% {
+				transform: scale(1);
+				opacity: 1;
+			}
+		}
+
+		/* General Fade */
+		.animate-fade {
+			animation: fadeIn 1.5s ease;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+
+			to {
+				opacity: 1;
+			}
+		}
+
+		/* ---------------------------------------------
+    MOBILE RESPONSIVE
+---------------------------------------------- */
+
+		@media (max-width: 480px) {
+			.glass-card {
+				padding: 30px 25px;
+			}
+
+			.login-logo {
+				width: 110px;
+			}
+
+			h4 {
+				font-size: 18px;
+			}
+		}
+        @media (max-width: 480px) {
+
+	.login-card {
+		padding: 28px 22px;
+		margin: 0 14px;
+	}
+
+	.brand-logo {
+		width: 110px;
+	}
+
+	h3 {
+		font-size: 18px;
+	}
+
+	p {
+		font-size: 13px;
+	}
+
+	.floating-input {
+		padding: 11px 12px;
+		font-size: 14px;
+	}
+
+	.btn-flux {
+		padding: 12px;
+		font-size: 15px;
+		border-radius: 10px;
+	}
+}

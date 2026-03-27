@@ -1,0 +1,16 @@
+{
+	  "retailerName": "Auto FX",
+	  "retailerEmail": "autofx@comcast.net",
+	  "retailerPhone": "856-665-6550",
+	  "retailerAddress": {
+	  "street": "7300 N Crescent Blvd",
+	  "street2": "Unit 1B",
+	  "city": "Pennsauken",
+	  "state": "NJ",
+	  "zip": "08110",
+	  "country": "US"
+	  },
+	  "defaultCurrency": "USD",
+	  "validationMethod": "ECA Only",
+	  "files" : [{"type" : "vtAgreement", "fileBytes" : ""}]
+	 }
