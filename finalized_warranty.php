@@ -107,7 +107,9 @@ require_once("includes/header.php");
 							<div class="watermark">
 								<img src="images/logo_large_bg.png" alt="">
 							</div>
-							<table id="warrantyTable" class="table table-responsive-md">
+							<div class="table-responsive">
+                            <table class="table table-responsive-md" id="finance_table">
+
 								<thead>
 									<tr>
 										<th>Customer Name</th>
@@ -358,3 +360,16 @@ require_once("includes/header.php");
 		$('#preloader').fadeOut(1500);
 	});
 </script>
+   <script src="./vendor/global/global.min.js"></script>
+	<script src="./vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+
+	<!-- Dashboard 1 -->
+    <script src="./js/custom.min.js"></script>
+	<script src="./js/deznav-init.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+	<script src="js/demo.js"></script>
+<script>
+        $(document).ready( function () {
+          $('#finance_table').DataTable();
+        } );
+    </script>
